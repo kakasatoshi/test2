@@ -6,6 +6,7 @@ import "./InvoiceForm.css";
 const baseURL = "http://simsoft.com.vn:8085/DeTestSo6/api";
 
 const InvoiceForm = () => {
+  const [show, setShow] = useState(false);
   const [customers, setCustomers] = useState([]);
   const [items, setItems] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState("");
@@ -84,6 +85,7 @@ const InvoiceForm = () => {
           `/DeTestSo6/api/TblCustomerLists/${customerId}`
         );
         setCustomerInfo(response.data);
+        setShow(!show);
       } catch (error) {
         console.error("Lỗi khi lấy thông tin khách hàng:", error);
       }
@@ -158,27 +160,38 @@ const InvoiceForm = () => {
         <div className="flex items-center mb-2">
           <span className="w-1/6">Khách hàng:</span>
           {/* <checkBox /> */}
-          {/* <input
+          <input
             type="text"
-            value={customerInfo.customerCode}
+            value={customerInfo.customerId || invoice.customerCode}
             onChange={(e) => handleCustomerChange(e.target.value)}
             className="border border-gray-400 p-1 w-1/4"
-          /> */}
-
-          <select
-            className="border border-gray-400 p-1 w-1/4"
-            multiple
-            size={1}
-            onChange={(e) => handleCustomerChange(e.target.value)}
+          />{" "}
+          <button
+            className="border border-gray-400 px-2 py-1"
+            onClick={() => setShow(!show)}
           >
-            {customers.map((customer) => (
-              <option key={customer.customerId} value={customer.customerId}>
-                <div className="customer">
-                  <span>{customer.customerId}</span>
-                </div>
-              </option>
-            ))}
-          </select>
+            {show ? ">" : "<"}
+          </button>
+          {show && (
+            <select
+              className="border border-gray-400 p-1 w-1/4 "
+              multiple
+              size={5}
+              onChange={(e) => handleCustomerChange(e.target.value)}
+            >
+              {customers.map((customer) => (
+                <option key={customer.customerId} value={customer.customerId}>
+                  <div className="customer">
+                    <span>
+                      {"   "}
+                      {customer.customerId}
+                      {"--"} {customer.customerName}
+                    </span>
+                  </div>
+                </option>
+              ))}
+            </select>
+          )}
           {/* {console.log(invoice.customerCode)} */}
           <span className="w-1/2 pl-2">
             {customerInfo.customerName || invoice.customerName}
